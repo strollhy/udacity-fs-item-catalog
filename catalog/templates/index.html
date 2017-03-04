@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row">
+  <div class="col-md-2">
+    <h2>Categories</h2>
+    <ul class="list-unstyled">
+      {% for category in categories %}
+      <a href="{{url_for('.index', category=category.name)}}">
+        <li>{{category.name}}</li>
+      </a>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="col-md-10">
+    <a href="{{url_for('.add')}}">Add new item</a>
+    <h2>Items</h2>
+    <ul class="list-unstyled">
+      {% for item in items %}
+      <li>
+        <a href="{{url_for('.show', id=item.id)}}">{{item.name}}</a>
+        <em>({{item.category.name}})</em>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+
+{% endblock %}

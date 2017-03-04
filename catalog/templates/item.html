@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+{% if action == 'Show' %}
+  <div class="row">
+    <div class="col-md-12">
+      <h3>{{item.name}}</h3>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <p>{{item.description}}</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <a href="{{url_for('.edit', id=item.id)}}">Edit</a>
+      |
+      <a href="{{url_for('.delete', id=item.id)}}">Delete</a>
+    </div>
+  </div>
+
+{% elif action == 'Delete' %}
+  <h3>Delete Item</h3>
+  <p>Are you sure you want to delete?</p>
+  <form method="POST">
+    <button type="submit" class="btn">Confirm</button>
+    <a href="{{url_for('.show', id=id)}}">Cancel</a>
+  </form>
+
+{% else %}
+  <h3>{{action}} item</h3>
+  <form method="POST" enctype="multipart/form-data">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" name="name" id="name" value="{{item.name}}" class="form-control"/>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea name="description" id="description" class="form-control">{{item.description}}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="category">Category</label>
+      <select name="category_id">
+        {% for category in categories %}
+          <option value="{{category.id}}">{{category.name}}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+  </form>
+{% endif %}
+
+{% endblock %}
