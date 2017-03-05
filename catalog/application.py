@@ -8,6 +8,7 @@ import random, string
 
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
+from functools import wraps
 import httplib2
 import json
 from flask import make_response
@@ -19,11 +20,20 @@ app = Flask(__name__)
 session = Session()
 
 
+# Helpers
 def __render_template(template, **kwargs):
     return render_template(template,
         username=login_session.get('username'),
         user_id=login_session.get('user_id'),
         **kwargs)
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'username' not in login_session:
+            return redirect(url_for('.login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 # User Auth
@@ -189,10 +199,8 @@ def add():
 
 
 @app.route('/item/<id>/edit', methods=['GET', 'POST'])
+@login_required
 def edit(id):
-    if 'username' not in login_session:
-        return redirect(url_for('.login'))
-
     categories = session.query(Category).all()
     item = session.query(Item).filter(Item.id==id).first()
     if item.user_id != login_session.get('user_id'):
@@ -212,10 +220,8 @@ def edit(id):
 
 
 @app.route('/item/<id>/delete', methods=['GET', 'POST'])
+@login_required
 def delete(id):
-    if 'username' not in login_session:
-        return redirect(url_for('.login'))
-
     item = session.query(Item).filter(Item.id==id).first()
     if item.user_id != login_session.get('user_id'):
         flash('You are not allowed to delete this item.', 'Unauthorized')
@@ -229,10 +235,8 @@ def delete(id):
 
 
 @app.route('/category/add', methods=['GET', 'POST'])
+@login_required
 def add_category():
-    if 'username' not in login_session:
-        return redirect(url_for('.login'))
-
     if request.method == 'POST':
         data = request.form.to_dict(flat=True)
         category = Category(**data)
