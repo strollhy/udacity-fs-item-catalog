@@ -12,6 +12,15 @@
         <div class="navbar-header">
           <a href="{{url_for('.index')}}" class="navbar-brand">Item Catalog</a>
         </div>
+        {% if username %}
+        <div class="navbar-text navbar-right">
+          <span>Welcome, {{username}}(<a href="{{url_for('.gdisconnect')}}">logout</a>)</span>
+        </div>
+        {% else %}
+        <div class="navbar-text navbar-right">
+          <span><a href="{{url_for('.login')}}">Login</a>
+        </div>
+        {% endif %}
       </div>
     </div>
     <div class="container">

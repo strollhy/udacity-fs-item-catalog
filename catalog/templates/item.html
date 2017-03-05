@@ -4,6 +4,20 @@
 
 
 {% if action == 'Show' %}
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for message in messages %}
+      <div class="row">
+        <div class="alert alert-danger" role="alert">
+          <span class="sr-only">Error:</span>
+          {{ message }}
+        </div>
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
   <div class="row">
     <div class="col-md-12">
       <h3>{{item.name}}</h3>
@@ -16,6 +30,7 @@
     </div>
   </div>
 
+  {% if item.user_id == user_id %}
   <div class="row">
     <div class="col-md-12">
       <a href="{{url_for('.edit', id=item.id)}}">Edit</a>
@@ -23,6 +38,7 @@
       <a href="{{url_for('.delete', id=item.id)}}">Delete</a>
     </div>
   </div>
+  {% endif %}
 
 {% elif action == 'Delete' %}
   <h3>Delete Item</h3>
@@ -55,6 +71,12 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Save</button>
+
+    {% if item %}
+      <a href="{{url_for('.show', id=item.id)}}">Cancel</a>
+    {% else %}
+      <a href="{{url_for('.index')}}">Cancel</a>
+    {% endif %}
   </form>
 {% endif %}
 
